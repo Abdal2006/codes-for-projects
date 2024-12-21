@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <string.h>
+
+struct Employee {
+    int id;
+    char name[100];
+    char position[100];
+    float salary;
+};
+
+void addEmployee(struct Employee employees[], int *count) {
+    struct Employee emp;
+    printf("Enter employee ID: ");
+    scanf("%d", &emp.id);
+    printf("Enter employee name: ");
+    getchar();  // To consume the leftover newline character
+    fgets(emp.name, sizeof(emp.name), stdin);
+    emp.name[strcspn(emp.name, "\n")] = '\0';  // Remove newline character
+    printf("Enter employee position: ");
+    fgets(emp.position, sizeof(emp.position), stdin);
+    emp.position[strcspn(emp.position, "\n")] = '\0';
+    printf("Enter employee salary: ");
+    scanf("%f", &emp.salary);
+
+    employees[*count] = emp;
+    (*count)++;
+    printf("Employee added successfully!\n");
+}
+
+void viewEmployees(struct Employee employees[], int count) {
+    if (count == 0) {
+        printf("No employees to display.\n");
+        return;
+    }
+
+    printf("\nEmployee List:\n");
+    for (int i = 0; i < count; i++) {
+        printf("ID: %d\n", employees[i].id);
+        printf("Name: %s\n", employees[i].name);
+        printf("Position: %s\n", employees[i].position);
+        printf("Salary: %.2f\n", employees[i].salary);
+        printf("-------------------------\n");
+    }
+}
+
+void deleteEmployee(struct Employee employees[], int *count, int id) {
+    int found = 0;
+    for (int i = 0; i < *count; i++) {
+        if (employees[i].id == id) {
+            for (int j = i; j < *count - 1; j++) {
+                employees[j] = employees[j + 1];
+            }
+            (*count)--;
+            found = 1;
+            printf("Employee with ID %d deleted.\n", id);
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Employee with ID %d not found.\n", id);
+    }
+}
+
+int main() {
+    struct Employee employees[100];
+    int choice, count = 0;
+
+    while (1) {
+        printf("\nEmployee Management System\n");
+        printf("1. Add Employee\n");
+        printf("2. View Employees\n");
+        printf("3. Delete Employee\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            addEmployee(employees, &count);
+        } else if (choice == 2) {
+            viewEmployees(employees, count);
+        } else if (choice == 3) {
+            int id;
+            printf("Enter employee ID to delete: ");
+            scanf("%d", &id);
+            deleteEmployee(employees, &count, id);
+        } else if (choice == 4) {
+            printf("Exiting system...\n");
+            break;
+        } else {
+            printf("Invalid choice! Please try again.\n");
+        }
+    }
+
+    return 0;
+}
+
+
+
+//end of project
