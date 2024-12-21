@@ -1,0 +1,149 @@
+import os
+from cryptography.fernet import Fernet
+from getpass import getpass
+
+class FileEncryptDecrypt:
+    def __init__(self):
+        self.key = None
+        self.cipher = None
+
+    def generate_key(self):
+        """Generate a new encryption key and save it"""
+        self.key = Fernet.generate_key()
+        self.cipher = Fernet(self.key)
+        with open("secret.key", "wb") as key_file:
+            key_file.write(self.key)
+        print("Encryption key generated and saved.")
+
+    def load_key(self):
+        """Load the saved encryption key"""
+        if os.path.exists("secret.key"):
+            with open("secret.key", "rb") as key_file:
+                self.key = key_file.read()
+                self.cipher = Fernet(self.key)
+            print("Encryption key loaded.")
+        else:
+            print("No encryption key found. Please generate one first.")
+
+    def encrypt_file(self, filename):
+        """Encrypt a file"""
+        try:
+            with open(filename, "rb") as file:
+                file_data = file.read()
+
+            encrypted_data = self.cipher.encrypt(file_data)
+
+            encrypted_filename = filename + ".enc"
+            with open(encrypted_filename, "wb") as enc_file:
+                enc_file.write(encrypted_data)
+
+            print(f"File '{filename}' encrypted successfully. Saved as '{encrypted_filename}'")
+        except FileNotFoundError:
+            print(f"Error: The file '{filename}' does not exist.")
+        except Exception as e:
+            print(f"An error occurred while encrypting the file: {e}")
+
+    def decrypt_file(self, encrypted_filename):
+        """Decrypt an encrypted file"""
+        try:
+            with open(encrypted_filename, "rb") as enc_file:
+                encrypted_data = enc_file.read()
+
+            decrypted_data = self.cipher.decrypt(encrypted_data)
+
+            original_filename = encrypted_filename.replace(".enc", "")
+            with open(original_filename, "wb") as dec_file:
+                dec_file.write(decrypted_data)
+
+            print(f"File '{encrypted_filename}' decrypted successfully. Saved as '{original_filename}'")
+        except FileNotFoundError:
+            print(f"Error: The file '{encrypted_filename}' does not exist.")
+        except Exception as e:
+            print(f"An error occurred while decrypting the file: {e}")
+
+    def start(self):
+        """Main menu for the user to select actions"""
+        while True:
+            print("\nFile Encryption and Decryption App")
+            print("1. Generate a new encryption key")
+            print("2. Load existing encryption key")
+            print("3. Encrypt a file")
+            print("4. Decrypt a file")
+            print("5. Exit")
+
+            choice = input("Choose an option (1-5): ").strip()
+
+            if choice == "1":
+                self.generate_key()
+            elif choice == "2":
+                self.load_key()
+            elif choice == "3":
+                if self.cipher:
+                    filename = input("Enter the file name to encrypt: ").strip()
+                    self.encrypt_file(filename)
+                else:
+                    print("No encryption key loaded. Please load or generate a key first.")
+            elif choice == "4":
+                if self.cipher:
+                    encrypted_filename = input("Enter the encrypted file name to decrypt: ").strip()
+                    self.decrypt_file(encrypted_filename)
+                else:
+                    print("No encryption key loaded. Please load or generate a key first.")
+            elif choice == "5":
+                print("Exiting the program. Goodbye!")
+                break
+            else:
+                print("Invalid choice, please select a valid option.")
+
+def main():
+    app = FileEncryptDecrypt()
+    app.start()
+
+if __name__ == "__main__":
+    main()
+
+/////end of code
+//coments from here 
+/////File Encryption and Decryption App
+
+
+Example of Interaction:
+
+
+1. Generate a new encryption key
+2. Load existing encryption key
+3. Encrypt a file
+4. Decrypt a file
+5. Exit
+Choose an option (1-5): 1
+Encryption key generated and saved.
+
+File Encryption and Decryption App
+1. Generate a new encryption key
+2. Load existing encryption key
+3. Encrypt a file
+4. Decrypt a file
+5. Exit
+Choose an option (1-5): 3
+Enter the file name to encrypt: example.txt
+File 'example.txt' encrypted successfully. Saved as 'example.txt.enc'
+
+File Encryption and Decryption App
+1. Generate a new encryption key
+2. Load existing encryption key
+3. Encrypt a file
+4. Decrypt a file
+5. Exit
+Choose an option (1-5): 4
+Enter the encrypted file name to decrypt: example.txt.enc
+File 'example.txt.enc' decrypted successfully. Saved as 'example.txt'
+
+
+/*NOTE You need to install the cryptography package for this to work:
+
+pip install cryptography
+
+--*--*--*--***********************************************************************--*--*--*
+
+
+
