@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .question-container { margin-bottom: 20px; }
+        .btn { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        .btn:hover { background-color: #45a049; }
+        .result { font-size: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Interactive Quiz</h1>
+    <div class="question-container" id="question-container"></div>
+    <button class="btn" onclick="submitAnswers()">Submit</button>
+    <div id="result" class="result"></div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is the capital of France?",
+                options: ["Berlin", "Madrid", "Paris", "Rome"],
+                correctAnswer: "Paris"
+            },
+            {
+                question: "What is 2 + 2?",
+                options: ["3", "4", "5", "6"],
+                correctAnswer: "4"
+            },
+            {
+                question: "What is the largest planet in our solar system?",
+                options: ["Earth", "Mars", "Jupiter", "Saturn"],
+                correctAnswer: "Jupiter"
+            },
+            {
+                question: "Who wrote 'Romeo and Juliet'?",
+                options: ["Shakespeare", "Dickens", "Hemingway", "Austen"],
+                correctAnswer: "Shakespeare"
+            },
+            {
+                question: "What is the smallest continent?",
+                options: ["Asia", "Europe", "Australia", "Africa"],
+                correctAnswer: "Australia"
+            }
+        ];
+
+        let userAnswers = [];
+        let score = 0;
+
+        function displayQuestions() {
+            const questionContainer = document.getElementById("question-container");
+            questionContainer.innerHTML = '';
+
+            questions.forEach((question, index) => {
+                let questionHTML = `<div>
+                    <p>${question.question}</p>
+                    ${question.options.map(option => `
+                        <input type="radio" name="question${index}" value="${option}" id="q${index}${option}">
+                        <label for="q${index}${option}">${option}</label><br>
+                    `).join('')}
+                </div>`;
+                questionContainer.innerHTML += questionHTML;
+            });
+        }
+
+        function submitAnswers() {
+            score = 0;
+            questions.forEach((question, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selectedOption && selectedOption.value === question.correctAnswer) {
+                    score++;
+                }
+            });
+            document.getElementById("result").innerText = `Your score: ${score} out of ${questions.length}`;
+        }
+
+        displayQuestions();
+    </script>
+</body>
+</html>
